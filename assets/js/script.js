@@ -3,33 +3,38 @@
 var cityInputEl = document.querySelector("#city");
 var cityHistoryButtonsEl = document.querySelector("#city-history");
 
-var city = [];
+// var city = [];
 
 var lat;
 var lon;
 
+// API key
 const APIkey = '66b78b76cf28151458f6e4a1d8e96fc6';
 
 var cityFormEl = document.querySelector("#city-search");
 
+/*
 function init()
 {
-    storedCities = localStorage.getItem("Cities");
+    if (localStorage.getItem("Cities") !== null)
+    {
+        storedCities = localStorage.getItem("Cities");
 
-    city = JSON.parse(storedCities);
-
-    console.log(city);
-
-    getCityHistory();
+        var cities = JSON.parse(storedCities);
+    
+        console.log(cities);
+    
+        getCityHistory(cities);
+    }
 }
 
-function getCityHistory()
+function getCityHistory(cities)
 {
-    for (var i = 0; i < city.length; i++)
+    for (var i = 0; i < 1; i++)
     {
         var button = document.createElement("button");
 
-        button.textContent = city[i];
+        button.textContent = cities.name;
 
         button.setAttribute("type", "submit");
         button.setAttribute("class", "col-12 btn btn-primary mt-2");
@@ -37,13 +42,13 @@ function getCityHistory()
         cityHistoryButtonsEl.appendChild(button);
     }
 }
+*/
 
-function getWeather()
+function getLocation(city)
 {
-    var currentCity = city[city.length - 1];
+    var currentCity = city;
 
-    var geocodingRequestURL = 'http://api.openweathermap.org/geo/1.0/direct?q=' + currentCity + ',&limit=1&appid=' + APIkey;
-    var weatherRequestURL = 'api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + lon + '&appid=' + APIkey;
+    var geocodingRequestURL = 'https://api.openweathermap.org/geo/1.0/direct?q=' + currentCity.name + '&limit=1&appid=' + APIkey;
 
     fetch(geocodingRequestURL)
         .then(function (response)
@@ -53,7 +58,21 @@ function getWeather()
         .then(function (data)
         {
             console.log(data);
+
+            lat = data[0].lat;
+            lon = data[0].lon;
+
+            getWeather(currentCity, lat, lon);
         });
+}
+
+function getWeather(currentCity, lat, lon)
+{
+    console.log(currentCity);
+    console.log(lat);
+    console.log(lon);
+
+    var weatherRequestURL = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + lon + '&appid=' + APIkey;
     
     fetch(weatherRequestURL)
         .then(function (response)
@@ -70,13 +89,24 @@ cityFormEl.addEventListener("submit", function(event)
 {
     event.preventDefault();
 
-    console.log(event);
+    // console.log(event);
 
-    city.push(cityInputEl.value);
+    var city = {
+        name: cityInputEl.value,
+        date: '',
+        icon: '',
+        tempurature: '',
+        humidity: '',
+        windSpeed: ''
+    }
+
+    // city.push(cityInputEl.value);
 
     console.log(city);
 
     localStorage.setItem("Cities", JSON.stringify(city));
+
+    getLocation(city);
 });
 
-init();
+// init();
