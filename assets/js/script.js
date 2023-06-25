@@ -1,20 +1,24 @@
 // Global variables
 
+// Variables to point to elements in HTML
+var cityFormEl = document.querySelector("#city-search");
 var cityInputEl = document.querySelector("#city");
 var cityHistoryFormEl = document.querySelector("#city-history-form");
 var currentForecastEl = document.querySelector("#current-forecast");
 var fiveDayForecastEl = document.querySelector("#five-day-forecast");
 
+// Empty array to hold city names
 var cities = [];
 
+// Variables to hold cityies latitude and longitute
 var lat;
 var lon;
 
 // API key
 const APIkey = '66b78b76cf28151458f6e4a1d8e96fc6';
 
-var cityFormEl = document.querySelector("#city-search");
-
+// Runs on page load
+// Checks to see if there is data in the Cities local storage object and adds them to the cities array
 function init()
 {
     if (localStorage.getItem("Cities") !== null)
@@ -27,6 +31,7 @@ function init()
     }
 }
 
+// Adds cities stored in local storage to history area of HTML on page load
 function getCityHistory()
 {
     for (var i = 0; i < cities.length; i++)
@@ -42,6 +47,20 @@ function getCityHistory()
     }
 }
 
+// Adds new button to city history after new city is searched for
+function addCityToHistory()
+{
+    var button = document.createElement("button");
+
+    button.textContent = cities[cities.length - 1];
+
+    button.setAttribute("type", "submit");
+    button.setAttribute("class", "col-12 btn btn-primary mt-2");
+
+    cityHistoryFormEl.appendChild(button);
+}
+
+// Gets latitude and longitude of selected city using API
 function getLocation(currentCity)
 {
     var geocodingRequestURL = 'https://api.openweathermap.org/geo/1.0/direct?q=' + currentCity + '&limit=1&appid=' + APIkey;
@@ -53,8 +72,6 @@ function getLocation(currentCity)
         })
         .then(function (data)
         {
-            // console.log(data);
-
             lat = data[0].lat;
             lon = data[0].lon;
 
@@ -62,6 +79,7 @@ function getLocation(currentCity)
         });
 }
 
+// Calls weather API to get weather data from selected city using latitude and longitude
 function getWeather(currentCity, lat, lon)
 {
     console.log(currentCity);
@@ -79,11 +97,12 @@ function getWeather(currentCity, lat, lon)
         {
             console.log(data);
 
+            // Array of objects that holds current weather data and five day forcast
             var cityWeather = [
 
                 {
                     cityName: currentCity,
-                    date: dayjs.unix(data.list[0].dt).format('MM/DD/YYYY'),
+                    date: dayjs.unix(data.list[0].dt).format('M/D/YYYY'),
                     icon: data.list[0].weather[0].icon,
                     tempurature: data.list[0].main.temp,
                     wind: data.list[0].wind.speed,
@@ -92,7 +111,7 @@ function getWeather(currentCity, lat, lon)
 
                 {
                     cityName: currentCity,
-                    date: dayjs.unix(data.list[7].dt).format('MM/DD/YYYY'),
+                    date: dayjs.unix(data.list[7].dt).format('M/D/YYYY'),
                     icon: data.list[7].weather[0].icon,
                     tempurature: data.list[7].main.temp,
                     wind: data.list[7].wind.speed,
@@ -101,7 +120,7 @@ function getWeather(currentCity, lat, lon)
 
                 {
                     cityName: currentCity,
-                    date: dayjs.unix(data.list[15].dt).format('MM/DD/YYYY'),
+                    date: dayjs.unix(data.list[15].dt).format('M/D/YYYY'),
                     icon: data.list[15].weather[0].icon,
                     tempurature: data.list[15].main.temp,
                     wind: data.list[15].wind.speed,
@@ -110,7 +129,7 @@ function getWeather(currentCity, lat, lon)
 
                 {
                     cityName: currentCity,
-                    date: dayjs.unix(data.list[23].dt).format('MM/DD/YYYY'),
+                    date: dayjs.unix(data.list[23].dt).format('M/D/YYYY'),
                     icon: data.list[23].weather[0].icon,
                     tempurature: data.list[23].main.temp,
                     wind: data.list[23].wind.speed,
@@ -119,7 +138,7 @@ function getWeather(currentCity, lat, lon)
 
                 {
                     cityName: currentCity,
-                    date: dayjs.unix(data.list[31].dt).format('MM/DD/YYYY'),
+                    date: dayjs.unix(data.list[31].dt).format('M/D/YYYY'),
                     icon: data.list[31].weather[0].icon,
                     tempurature: data.list[31].main.temp,
                     wind: data.list[31].wind.speed,
@@ -128,7 +147,7 @@ function getWeather(currentCity, lat, lon)
 
                 {
                     cityName: currentCity,
-                    date: dayjs.unix(data.list[39].dt).format('MM/DD/YYYY'),
+                    date: dayjs.unix(data.list[39].dt).format('M/D/YYYY'),
                     icon: data.list[39].weather[0].icon,
                     tempurature: data.list[39].main.temp,
                     wind: data.list[39].wind.speed,
@@ -142,6 +161,7 @@ function getWeather(currentCity, lat, lon)
         });
 }
 
+// Appends elements to HTML to display weather data
 function displayWeather(cityWeather)
 {
     var showCityNameAndDate = document.createElement("h3");
@@ -197,6 +217,7 @@ function displayWeather(cityWeather)
     }
 }
 
+// Removes appended elements that display weather data
 function clearWeatherForecast()
 {
     while (currentForecastEl.firstChild)
@@ -213,6 +234,7 @@ function clearWeatherForecast()
     }
 }
 
+// Adds event listener that gets weather for the city that the user selects from search history
 cityHistoryFormEl.addEventListener("submit", function(event)
 {
     event.preventDefault();
@@ -226,8 +248,9 @@ cityHistoryFormEl.addEventListener("submit", function(event)
     console.log(selectedCity);
 
     getLocation(selectedCity);
-})
+});
 
+// Adds event listener that gets weather for city that user searches for
 cityFormEl.addEventListener("submit", function(event)
 {
     event.preventDefault();
@@ -251,6 +274,8 @@ cityFormEl.addEventListener("submit", function(event)
         cities.push(cityInputEl.value);
 
         console.log(cities);
+
+        addCityToHistory();
     
         localStorage.setItem("Cities", JSON.stringify(cities));
     }
@@ -262,4 +287,5 @@ init();
 
 // To do
 
-// Save city history and display on click
+// Comments
+// README
