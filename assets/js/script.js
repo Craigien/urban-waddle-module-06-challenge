@@ -261,8 +261,10 @@ cityFormEl.addEventListener("submit", function(event)
 
     var cityAlreadyInHistory = false;
 
-    for (var i = 0; i < city.length; i++)
+    for (var i = 0; i < cities.length; i++)
     {
+        console.log(cities[i]);
+
         if (cities[i] === cityInputEl.value)
         {
             cityAlreadyInHistory = true;
@@ -284,8 +286,3 @@ cityFormEl.addEventListener("submit", function(event)
 });
 
 init();
-
-// To do
-
-// Comments
-// README
