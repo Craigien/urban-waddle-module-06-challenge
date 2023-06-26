@@ -11,7 +11,7 @@ N/A
 
 ## Usage
 
-The application can be accessed at this URL: 
+The application can be accessed at this URL: https://craigien.github.io/urban-waddle-module-06-challenge/
 
 To view the weather forecast for a city, search for the city name in the search field at the top left of the screen.  The weather for that city will then be displayed.  You can also select a button with the city name in the search history area below the search.
 

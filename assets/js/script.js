@@ -82,10 +82,6 @@ function getLocation(currentCity)
 // Calls weather API to get weather data from selected city using latitude and longitude
 function getWeather(currentCity, lat, lon)
 {
-    console.log(currentCity);
-    console.log(lat);
-    console.log(lon);
-
     var weatherRequestURL = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + lon + '&appid=' + APIkey + '&units=imperial';
     
     fetch(weatherRequestURL)
@@ -95,8 +91,6 @@ function getWeather(currentCity, lat, lon)
         })
         .then(function (data)
         {
-            console.log(data);
-
             // Array of objects that holds current weather data and five day forcast
             var cityWeather = [
 
@@ -154,8 +148,6 @@ function getWeather(currentCity, lat, lon)
                     humidity: data.list[39].main.humidity
                 }
             ];
-
-            console.log(cityWeather);
 
             displayWeather(cityWeather);
         });
@@ -239,13 +231,9 @@ cityHistoryFormEl.addEventListener("submit", function(event)
 {
     event.preventDefault();
 
-    console.log(event);
-
     clearWeatherForecast();
 
     var selectedCity = event.submitter.textContent;
-
-    console.log(selectedCity);
 
     getLocation(selectedCity);
 });
@@ -255,16 +243,12 @@ cityFormEl.addEventListener("submit", function(event)
 {
     event.preventDefault();
 
-    console.log(event);
-
     clearWeatherForecast();
 
     var cityAlreadyInHistory = false;
 
     for (var i = 0; i < cities.length; i++)
     {
-        console.log(cities[i]);
-
         if (cities[i] === cityInputEl.value)
         {
             cityAlreadyInHistory = true;
@@ -274,9 +258,7 @@ cityFormEl.addEventListener("submit", function(event)
     if (!cityAlreadyInHistory)
     {
         cities.push(cityInputEl.value);
-
-        console.log(cities);
-
+        
         addCityToHistory();
     
         localStorage.setItem("Cities", JSON.stringify(cities));
